@@ -1,0 +1,5 @@
+# To commit the empty directory "sheets"...
+# > Ignore everything in this directory:
+*
+# > Except this file:
+!.gitignore
