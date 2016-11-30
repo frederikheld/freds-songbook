@@ -1,0 +1,8 @@
+{{title:Sheet not found}}
+{{artist::-(}}
+
+{{verse1:}}
+The requested sheet does unfortunately not exist.
+
+{{verse2:}}
+<-- Please select another song from the index!

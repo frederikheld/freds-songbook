@@ -1,0 +1,62 @@
+<h1>How to make a sheet</h1>
+<h2>A quick introduction</h2>
+
+<p>A sheet is just a txt file with some special formatting.</p>
+
+<p>A song with chords can easily be set by placing the chords in square brackets right before the character it shall appear above:</p>
+
+<code>[Bm]On a dark desert highway, [F#]cool wind in my hair
+[A]warm smell of colitas [E]rising up through the air.</code>
+
+<p>Please use international notation!<p>
+<code>C C# D D# E F F# G G# A Bb B</code>
+<code>Cm C#m Dm D#m Fm F#m Gm G#m Am Bbm Bm</code>
+<code>Am7 G/C Fmaj7 ...</code>
+
+<p>To specify, which kind of text is coming up, you can use the following <em>blockstart tags</em>:</p>
+<code>{{intro#:}}
+{{verse#:}}
+{{chorus#:}}
+{{bridge#:}}
+{{outro#:}}
+</code>
+<p>Please replace the <em>#</em> sign by a running number for each block type!</p>
+<p>The block has always to start right below the <em>blockstart tag</em> and ends with an empty line</p>
+
+<p>A full block would look like this:</p>
+<code>{{verse1:}}
+[Bm]On a dark desert highway, [F#]cool wind in my hair
+[A]warm smell of colitas [E]rising up through the air.
+</code>
+
+<p>You can also use <em>blockmarker tags</em> to repeat a block without having to type it again.</p>
+
+<code>{{chorus1:}}
+[G]Welcome to the Hotel Cali[D]fornia
+Such a [em]lovely place, such a [Bm]lovely face.
+
+{{verse1:}}
+[Bm]On a dark desert highway, [F#]cool wind in my hair
+[A]warm smell of colitas [E]rising up through the air.
+
+{{chorus1}}
+</code>
+
+<p>The songbook will automatically insert the text of the <em>chorus1</em> block at the second marker. Please note, that the <em>blockmarker tags</em> don't have colon!</p>
+
+<p>To add some more information to your sheet, you can use the following <em>meta tags</em>:</p>
+<code>{{title:?}}
+{{artist:?}}
+{{original_artist:?}}
+{{year:?}}
+{{from:?}}
+{{source:?}}
+{{capo:?}}
+</code>
+<p>Please replace the <em>?</em> sign by the respective information. You don't have to use all <em>meta tags</em>, but <em>artist</em> and <em>title</em> are mandatory!</p>
+
+<p>You can see the full magic in this <a href="sheets/summerwine.txt" target="_blank">example sheet</a>.</p>
+
+<p>I'm happy to have your favorite songs in my mailbox <a href="mailto:&#x6C;&#105;&#101;&#100;&#x65;&#114;&#x62;&#x75;&#99;&#x68;&#64;&#102;&#114;&#x65;&#100;&#101;&#114;&#105;&#x6B;&#x68;&#101;&#x6C;&#100;&#46;&#100;&#101;?subject=I've made a sheet :-)">liederbuch<span style="display: none">in your face spam bot!</span>@frederik<span style="display: none">in your face spam bot!</span>held.de</a> ;-)</p>
+
+<p><strong>P. S.: The display of the sheets is still a bit buggy. Please don't use workarounds to avoid the bugs. I will fix them soon ;-)</strong></p>
