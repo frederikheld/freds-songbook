@@ -313,6 +313,7 @@
             <?php if ($file_type == "sheet"): ?>
 
             <div id="sheet">
+                <div id="sheet-header">
 
                     <?php /* DEBUG
                     <pre><?php print_r($sheet); ?></pre>
@@ -350,6 +351,9 @@
                         ?>
                     </div>
                     <?php endif; ?>
+                    
+                </div>
+                <div id="sheet-body">
 
                     <?php
                         /**
@@ -390,8 +394,10 @@
                     </div>
 
                     <?php endforeach; ?>
-
+                
                 </div>
+
+            </div>
 
             <?php endif; ?>
 
