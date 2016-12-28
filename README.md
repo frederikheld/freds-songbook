@@ -6,7 +6,7 @@ You can use the app *as is* at http://liederbuch.frederikheld.de/. You can also 
 
 ## For developers
 Feel free to submit pull requests. Please keep in mind that the purpose of this project is to create a portable digital songbook that *serves my personal needs*. This project is also about learning. I want to improve on creating webapps and on playing the guitar. So I might do major rewrites on your submitted code or put features on hold that are not on my backlog right now, to keep the app clean. I still am happy about all new ideas and bugfixes you submit!
-The current development version is available at http://liederbuch.frederikheld.de/dev/
+The current development version is available at http://liederbuch.frederikheld.de/dev/. This might not represent the current state of the develop branch since it is updated directly from my local IDE.
 
 ### Development goals
 * No database server required. The app is completely file based to keep the entry hurdle for users who want to put it on their own servers low. Keep in mind that they might be absolute beginners in web development!
