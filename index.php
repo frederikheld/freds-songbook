@@ -178,11 +178,11 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" type="text/css" href="libs/snap.js/snap.css" />
-        <link rel="stylesheet" type="text/css" href="libs/fontawesome/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="3rdparty/snap.js/snap.css" />
+        <link rel="stylesheet" type="text/css" href="3rdparty/fontawesome/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" href="style.css" />
 
-        <script type="text/javascript" src="libs/jquery/jquery-1.12.3.min.js"></script>
+        <script type="text/javascript" src="3rdparty/jquery/jquery-1.12.3.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
 
@@ -416,7 +416,7 @@
             <button title="Open Sheet Settings" id="open-right" class="button"><span class="fa fa-cog"></span></button>
         </div>
 
-        <script type="text/javascript" src="libs/snap.js/snap.js"></script>
+        <script type="text/javascript" src="3rdparty/snap.js/snap.js"></script>
         <script type="text/javascript">
 
             /* Init Snap */
