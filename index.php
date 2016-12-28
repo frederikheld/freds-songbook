@@ -4,31 +4,17 @@
      *  CONFIGURATION
      */
 
-
     /* DEBUGGING */
 
     error_reporting(E_ALL);
 
 
     /**
-     *  CONSTANTS
+     *  INCLUDES
      */
-
-
-    /* ALLOWED VALUES */
-
-    $block_types = array("intro", "verse", "chorus", "bridge", "outro");
-    $block_modifiers = array("chords", "tabs");
-
-
-    /* REGEXES */
-
-    $regex_chord = "~\[(.+?)\]~";                       // [chord]
-    $regex_meta = "~{{(.+?):(.+?)}}~";                  // {{key:value}}
-    $regex_blockstart = "~{{(.+?)(\|(.+?))*?:}}~";      // {{blockname:}} or {{blockname|modifyer:}}
-    $regex_blockmarker = "~{{(.+?)}}~";                 // {{blockmarker}}
-
-
+    
+    include_once ("modules/parser.php");
+    
 
     /**
      *  LOAD SHEET
@@ -56,117 +42,13 @@
         $file = "pages/error.txt";
     }
 
-
-
     // Activate interpreter only for sheets:
     if ($file_type == "sheet") {
-
-        // Init:
-        $sheet = array();
-        $sheet["order"] = array();
-
-        // Read lines in array:
-        $handle = fopen($file, "rb");
-        $lines = array();
-        while ($line = fgets($handle)) {
-            array_push ($lines, $line);
-        }
-
-
-    /**
-     *  EXTRACT INFORMATION FROM SHEET
-     */
-
-        // Loop over all lines:
-        $n = 0;
-        while ($n < count($lines)) {
-
-
-            // Search for meta:
-            $meta = array();
-            if (1 == preg_match($regex_meta, $lines[$n], $meta)) {
-                $sheet["meta"][$meta[1]] = $meta[2];
-
-                // Continue with next cycle:
-                $n++;
-                continue;
-            }
-
-
-            // Search for blockstart:
-            $blockname = "";
-            if (1 == preg_match($regex_blockstart, $lines[$n], $blockname)) {
-                foreach ($block_types as $type) {
-                    if (false !== strpos($blockname[1], $type)) {
-
-                        // Save block type:
-                        $sheet["blocks"][$blockname[1]]["type"] = $type;
-
-                        // Check for modifier and save it in case:
-                        if (isset($blockname[3])) {
-                            $sheet["blocks"][$blockname[1]]["modifier"] = $blockname[3];
-                        }
-
-                        break;
-                    }
-                }
-
-                // Save block name in block order array:
-                array_push($sheet["order"], $blockname[1]);
-                $sheet["blocks"][$blockname[1]]["lines"] = array();
-
-                // Add all lines until an empty line was found:
-                $n++;
-                while (0 != strlen(trim($lines[$n]))) {
-                    array_push($sheet["blocks"][$blockname[1]]["lines"], $lines[$n]);
-
-                    // Continue with next cycle:
-                    $n++;
-                    if ($n >= count($lines)) break 2; // Stop parsing if index is beyond scope.
-                    continue;
-                }
-            }
-
-
-            // Search for block placeholder:
-            $blockmarker = "";
-            if (1 == preg_match($regex_blockmarker, $lines[$n], $blockmarker)) {
-
-                array_push($sheet["order"], $blockmarker[1]);
-
-                // Continue with next cycle:
-                $n++;
-                continue;
-            }
-
-
-            $n++;
-
-        }
-
-
-
-        /**
-         *  REPLACE PLACEHOLDERS IN SHEET
-         */
-
-        $count = 0;
-        $helper = function($line) {
-            global $count;
-            global $regex_chord;
-
-            return preg_replace($regex_chord, "<span class=\"chord\">$1</span>", $line, -1, $count);
-        };
-
-        $newblocks = array();
-        foreach ($sheet["blocks"] as $key => $block) {
-            $newblocks[$key] = array_map($helper, $block);
-            if ($count > 0) {
-                $newblocks[$key]["modifier"] = "chords";
-            }
-        }
-
-        $sheet["blocks"] = $newblocks;
+        
+        $parser = new Parser();
+        
+        $parser->readFile($file);
+        $sheet = $parser->parseSheet();
 
     }
 
@@ -178,11 +60,11 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" type="text/css" href="libs/snap.js/snap.css" />
-        <link rel="stylesheet" type="text/css" href="libs/fontawesome/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="3rdparty/snap.js/snap.css" />
+        <link rel="stylesheet" type="text/css" href="3rdparty/fontawesome/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" href="style.css" />
 
-        <script type="text/javascript" src="libs/jquery/jquery-1.12.3.min.js"></script>
+        <script type="text/javascript" src="3rdparty/jquery/jquery-1.12.3.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
 
@@ -257,16 +139,9 @@
                 <ul>
                     <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>">Start</a></li>
                 </ul>
-                <ul class="songs">
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=hotel_california.txt">The Eagles: Hotel California</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=my_immortal.txt">Evanescence: My Immortal</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=boeser_wolf.txt">Die Toten Hosen: Böser Wolf</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=over_the_rainbow.txt">Judy Garland: Over the rainbow</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=hallelujah.txt">Rufus Wainwright: Hallelujah</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=summerwine.txt">Ville Valo & Natalia Avalon: Summerwine</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=bosse-schoenste_zeit.txt">Bosse: Schönste Zeit</a></li>
-                </ul>
-                <ul>
+                <?php
+                    include ("widgets/list-sheets.php");
+                ?>
                     <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?page=make_a_sheet.txt">Make a sheet!</a></li>
                 </ul>
             </div>
@@ -313,6 +188,7 @@
             <?php if ($file_type == "sheet"): ?>
 
             <div id="sheet">
+                <div id="sheet-header">
 
                     <?php /* DEBUG
                     <pre><?php print_r($sheet); ?></pre>
@@ -350,6 +226,9 @@
                         ?>
                     </div>
                     <?php endif; ?>
+                    
+                </div>
+                <div id="sheet-body">
 
                     <?php
                         /**
@@ -365,12 +244,12 @@
 
                         // Determine css class for block type:
                         $css_class = "";
-                        if (isset($block["type"]) && in_array($block["type"], $block_types)) {
+                        if (isset($block["type"])) {
                             $css_class = $block["type"];
                         }
 
                         // Add css class for modifier if applicable:
-                        if (isset($block["modifier"]) && in_array($block["modifier"], $block_modifiers)) {
+                        if (isset($block["modifier"])) {
                             $css_class .= " " . $block["modifier"];
                         }
 
@@ -390,8 +269,10 @@
                     </div>
 
                     <?php endforeach; ?>
-
+                
                 </div>
+
+            </div>
 
             <?php endif; ?>
 
@@ -410,7 +291,7 @@
             <button title="Open Sheet Settings" id="open-right" class="button"><span class="fa fa-cog"></span></button>
         </div>
 
-        <script type="text/javascript" src="libs/snap.js/snap.js"></script>
+        <script type="text/javascript" src="3rdparty/snap.js/snap.js"></script>
         <script type="text/javascript">
 
             /* Init Snap */
