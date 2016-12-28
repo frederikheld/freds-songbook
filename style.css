@@ -207,6 +207,11 @@ button:hover {
 
 /* RIGHT DRAWER */
 
+.meta td {
+    vertical-align: top;
+    text-align: left;
+}
+
 
 
 /* HEADER */

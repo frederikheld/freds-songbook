@@ -171,8 +171,9 @@
                         <h1>Meta</h1>
                         <table>
                         <?php
-                            echo (isset($sheet["meta"]["source"]) ? "<tr><td>Source:</td><td>" . $sheet["meta"]["source"] . "</td></tr>" : "");
                             echo (isset($sheet["meta"]["year"]) ? "<tr><td>Year:</td><td>" . $sheet["meta"]["year"] . "</td></tr>" : "");
+                            echo (isset($sheet["meta"]["album"]) ? "<tr><td>Album:</td><td>" . $sheet["meta"]["album"] . "</td></tr>" : "");
+                            echo (isset($sheet["meta"]["source"]) ? "<tr><td>Source:</td><td>" . $sheet["meta"]["source"] . "</td></tr>" : "");
                         ?>
                         </table>
                     </div>
