@@ -4,31 +4,17 @@
      *  CONFIGURATION
      */
 
-
     /* DEBUGGING */
 
     error_reporting(E_ALL);
 
 
     /**
-     *  CONSTANTS
+     *  INCLUDES
      */
-
-
-    /* ALLOWED VALUES */
-
-    $block_types = array("intro", "verse", "chorus", "bridge", "outro");
-    $block_modifiers = array("chords", "tabs");
-
-
-    /* REGEXES */
-
-    $regex_chord = "~\[(.+?)\]~";                       // [chord]
-    $regex_meta = "~{{(.+?):(.+?)}}~";                  // {{key:value}}
-    $regex_blockstart = "~{{(.+?)(\|(.+?))*?:}}~";      // {{blockname:}} or {{blockname|modifyer:}}
-    $regex_blockmarker = "~{{(.+?)}}~";                 // {{blockmarker}}
-
-
+    
+    include_once ("modules/parser.php");
+    
 
     /**
      *  LOAD SHEET
@@ -56,117 +42,13 @@
         $file = "pages/error.txt";
     }
 
-
-
     // Activate interpreter only for sheets:
     if ($file_type == "sheet") {
-
-        // Init:
-        $sheet = array();
-        $sheet["order"] = array();
-
-        // Read lines in array:
-        $handle = fopen($file, "rb");
-        $lines = array();
-        while ($line = fgets($handle)) {
-            array_push ($lines, $line);
-        }
-
-
-    /**
-     *  EXTRACT INFORMATION FROM SHEET
-     */
-
-        // Loop over all lines:
-        $n = 0;
-        while ($n < count($lines)) {
-
-
-            // Search for meta:
-            $meta = array();
-            if (1 == preg_match($regex_meta, $lines[$n], $meta)) {
-                $sheet["meta"][$meta[1]] = $meta[2];
-
-                // Continue with next cycle:
-                $n++;
-                continue;
-            }
-
-
-            // Search for blockstart:
-            $blockname = "";
-            if (1 == preg_match($regex_blockstart, $lines[$n], $blockname)) {
-                foreach ($block_types as $type) {
-                    if (false !== strpos($blockname[1], $type)) {
-
-                        // Save block type:
-                        $sheet["blocks"][$blockname[1]]["type"] = $type;
-
-                        // Check for modifier and save it in case:
-                        if (isset($blockname[3])) {
-                            $sheet["blocks"][$blockname[1]]["modifier"] = $blockname[3];
-                        }
-
-                        break;
-                    }
-                }
-
-                // Save block name in block order array:
-                array_push($sheet["order"], $blockname[1]);
-                $sheet["blocks"][$blockname[1]]["lines"] = array();
-
-                // Add all lines until an empty line was found:
-                $n++;
-                while (0 != strlen(trim($lines[$n]))) {
-                    array_push($sheet["blocks"][$blockname[1]]["lines"], $lines[$n]);
-
-                    // Continue with next cycle:
-                    $n++;
-                    if ($n >= count($lines)) break 2; // Stop parsing if index is beyond scope.
-                    continue;
-                }
-            }
-
-
-            // Search for block placeholder:
-            $blockmarker = "";
-            if (1 == preg_match($regex_blockmarker, $lines[$n], $blockmarker)) {
-
-                array_push($sheet["order"], $blockmarker[1]);
-
-                // Continue with next cycle:
-                $n++;
-                continue;
-            }
-
-
-            $n++;
-
-        }
-
-
-
-        /**
-         *  REPLACE PLACEHOLDERS IN SHEET
-         */
-
-        $count = 0;
-        $helper = function($line) {
-            global $count;
-            global $regex_chord;
-
-            return preg_replace($regex_chord, "<span class=\"chord\">$1</span>", $line, -1, $count);
-        };
-
-        $newblocks = array();
-        foreach ($sheet["blocks"] as $key => $block) {
-            $newblocks[$key] = array_map($helper, $block);
-            if ($count > 0) {
-                $newblocks[$key]["modifier"] = "chords";
-            }
-        }
-
-        $sheet["blocks"] = $newblocks;
+        
+        $parser = new Parser();
+        
+        $parser->readFile($file);
+        $sheet = $parser->parseSheet();
 
     }
 
@@ -362,12 +244,12 @@
 
                         // Determine css class for block type:
                         $css_class = "";
-                        if (isset($block["type"]) && in_array($block["type"], $block_types)) {
+                        if (isset($block["type"])) {
                             $css_class = $block["type"];
                         }
 
                         // Add css class for modifier if applicable:
-                        if (isset($block["modifier"]) && in_array($block["modifier"], $block_modifiers)) {
+                        if (isset($block["modifier"])) {
                             $css_class .= " " . $block["modifier"];
                         }
 
