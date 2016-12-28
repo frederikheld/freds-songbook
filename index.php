@@ -257,16 +257,9 @@
                 <ul>
                     <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>">Start</a></li>
                 </ul>
-                <ul class="songs">
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=hotel_california.txt">The Eagles: Hotel California</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=my_immortal.txt">Evanescence: My Immortal</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=boeser_wolf.txt">Die Toten Hosen: Böser Wolf</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=over_the_rainbow.txt">Judy Garland: Over the rainbow</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=hallelujah.txt">Rufus Wainwright: Hallelujah</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=summerwine.txt">Ville Valo & Natalia Avalon: Summerwine</a></li>
-                    <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?sheet=bosse-schoenste_zeit.txt">Bosse: Schönste Zeit</a></li>
-                </ul>
-                <ul>
+                <?php
+                    include ("widgets/list-sheets.php");
+                ?>
                     <li><a href="<?php echo $_SERVER["SCRIPT_NAME"]; ?>?page=make_a_sheet.txt">Make a sheet!</a></li>
                 </ul>
             </div>
