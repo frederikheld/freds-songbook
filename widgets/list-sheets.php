@@ -18,6 +18,7 @@ if ($handle = opendir (dirname (__FILE__) . "/../sheets/")) {
         }
     }
     // TODO: How did the README.md get into that array? It isn't even inside that directory!
+    //       Answer: It is there, because it exists in the directory. But why does NetBeans not show it?
     
 //    echo "<pre>Debug \$sheets:";
 //    print_r($sheets);
