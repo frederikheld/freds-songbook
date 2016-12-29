@@ -174,6 +174,8 @@
                             echo (isset($sheet["meta"]["year"]) ? "<tr><td>Year:</td><td>" . $sheet["meta"]["year"] . "</td></tr>" : "");
                             echo (isset($sheet["meta"]["album"]) ? "<tr><td>Album:</td><td>" . $sheet["meta"]["album"] . "</td></tr>" : "");
                             echo (isset($sheet["meta"]["source"]) ? "<tr><td>Source:</td><td>" . $sheet["meta"]["source"] . "</td></tr>" : "");
+                            echo (isset($sheet["meta"]["listen"]) ? "<tr><td>Listen:</td><td><a href=\"" . $sheet["meta"]["listen"] . "\">" . $sheet["meta"]["listen"] . "</a></td></tr>" : "");
+                            // TODO: Parser should add the surrounding tags. Maybe I need something like "engines" for different ourposes like a "meta engine", "chords engine", ...
                         ?>
                         </table>
                     </div>
