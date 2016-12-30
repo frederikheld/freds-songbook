@@ -12,6 +12,3 @@ The current development version is available at http://liederbuch.frederikheld.d
 * Mobile first. This is a web app that should work on smartphones and tablets, not on large screens. Responsiveness is still important.
 * Camp fire compatibility. Imagine, people are using the app at the camp fire. What do they need for a good user experience?
 * No database server required. The app is completely file based to keep the entry hurdle for users who want to put it on their own servers low. Keep in mind that they might be absolute beginners in web development!
-
-### Discuss!
-I'm happy to get your feedback on opinions on my work. Maybe they are bullshit, but then please let me know ;-)
