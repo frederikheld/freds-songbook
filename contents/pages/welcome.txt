@@ -1,0 +1,7 @@
+<h1>Freds Liederbuch</h1>
+<h2>Welcome to my songbook!</h2>
+
+<p>You can navigate the book with the navigation bar. Just click the buttons!</p>
+<p>You can also swipe the sheet to open the drawers.</p>
+
+<p><strong>Have fun!</strong></p>

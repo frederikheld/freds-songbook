@@ -1,0 +1,4 @@
+<h1>Sheet not found :-(</h1>
+
+<p>Unfortunately the sheet you requested does not exist.</p>
+<p>Please select another one from the index!</p>

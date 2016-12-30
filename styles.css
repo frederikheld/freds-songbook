@@ -1,0 +1,10 @@
+/*
+ * Best case scenario: This stylesheet is empty.
+ *
+ * Why?
+ *      > jQuery Mobile cares for the overall layout
+ *      > Each widget brings it's own stylesheet to style it's contents
+ *
+ * So this stylesheet should only contain corrections in the overall styling
+ * that can't be done via one of the above.
+ */

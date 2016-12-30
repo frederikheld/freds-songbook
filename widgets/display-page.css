@@ -1,0 +1,6 @@
+.static code {
+    white-space: pre-line;
+    display: block;
+    padding-left: 1em;
+    border-left: 0.4em solid #ccc;
+}
