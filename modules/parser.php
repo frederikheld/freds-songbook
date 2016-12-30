@@ -64,16 +64,29 @@ class Parser {
      * @param type $path
      */
     public function readFile($path) {
+        
+        // DEBUG:
+//        echo "\n\nContext in parser.php:";
+//        echo "\n\$path:";
+//        print_r ($path);
 
         // Read lines in array:
-        $handle = fopen($path, "rb");
-        $this->lines_raw = array();
-        while ($line = fgets($handle)) {
-            array_push ($this->lines_raw, $line);
+        $lines_raw = array();
+        if (file_exists($path)) {
+            $handle = fopen($path, "rb");
+            while ($line = fgets($handle)) {
+                array_push ($lines_raw, $line);
+            }
+        
+            // Store result in member:
+            $this->lines_raw = $lines_raw;
+            
+        } else {
+            echo "ERROR: File \"" . $path . "\" not found in parser.php";
+            return false;
         }
         
-        // Store result in member:
-        $this->lines_raw = $this->lines_raw;
+        return true;
         
     }
     
@@ -130,7 +143,8 @@ class Parser {
 
                 // Add all lines until an empty line was found:
                 $n++;
-                while (0 != strlen(trim($lines_raw[$n]))) { // DONEXT: The error is somwhere in this line or block!
+                while (0 != strlen(trim($lines_raw[$n]))) {
+                // TODO: The parser throws a "undefined offset" warning in the line above if there are only empty lines after the last opening tag.
                     array_push($sheet["blocks"][$blockname[1]]["lines"], $lines_raw[$n]);
 
                     // Continue with next cycle:
@@ -169,9 +183,15 @@ class Parser {
 
             return preg_replace($this->REGEXES["chord"], "<span class=\"chord\">$1</span>", $line, -1, $count);
         };
+        
+        // DEBUG:
+//        echo "\n\nContext in parser.php:";
+//        echo "\n\$sheet:";
+//        print_r ($sheet);
 
         $newblocks = array();
-        foreach ($sheet["blocks"] as $key => $block) {
+        foreach ($sheet["blocks"] as $key => $block) { // TODO: This line crashes if the sheet contains no blocks (undefined index)
+            
             $newblocks[$key] = array_map($helper, $block);
             if ($count > 0) {
                 $newblocks[$key]["modifier"] = "chords";
