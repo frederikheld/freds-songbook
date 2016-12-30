@@ -1,0 +1,24 @@
+/* Different display options for chords */
+
+.chord_small {
+    font-size: 0.6em !important;
+    line-height: 2.4em;
+    bottom: 1.4em;
+}
+
+.chord_medium {
+    font-size: 1.0em !important;
+    line-height: 2.4em;
+    bottom: 1.0em;
+}
+
+.chord_large {
+    font-size: 1.4em !important;
+    line-height: 2.4em;
+    bottom: 0.8em;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}

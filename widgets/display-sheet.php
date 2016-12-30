@@ -1,70 +1,110 @@
 <?php
 
-// TODO: Tie CSS file to widget
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+include_once("modules/widget.php");
+include_once("modules/parser.php");
 
 /**
- *  INCLUDES
+ * TODO: I really don't like how this widget can also display static pages,
+ *       although there is a distinct widget for that.
+ *       The whole architecture mixes up sheets and static pages, so everything
+ *       has to be redesigned and rewritten. For now, it solves the purpose.
  */
 
-include_once ("modules/parser.php");
+class WidgetDisplaySheet extends Widget {
 
-
-/**
- *  LOAD SHEET
- */
-
-// Decide which file to load and sanitize user input:
-if (isset($_GET["sheet"])) {
-
-    $file = "sheets/" . strip_tags(trim($_GET["sheet"]));
-    $file_type = "sheet";
-
-} else {
-
-    if (isset($_GET["page"])) {
-        $file = "pages/" . strip_tags(trim($_GET["page"]));
-        $file_type = "page";
-    } else {
-        $file = "pages/welcome.txt";
-        $file_type = "page";
+    public function __construct($context) {
+        parent::__construct($context);
+        
+        // Run this widget only if a sheet is requested:
+        if (!isset($this->context["sheet"])) {
+            return false;
+        }
+        
+        // Add stylesheet:
+//        $this->addStylesheet("display-sheet.css"); // Not neccessary since the default stylesheet was already autoloaded by parent::__construct()
+        
+        // Add views:
+        $this->addView(new ViewSheet($this->common), "sheet");
+        $this->addView(new ViewSheetMeta($this->common), "sheet-meta");
+        
+        // Gather data:
+        $file = "contents/sheets/" . $this->context["sheet"];
+        if (file_exists($file)) {
+            
+            // Load and parse sheet:
+            $this->common["parsed_sheet"] = $this->parseSheet($this->context["sheet"]);
+            
+        } else {
+            
+            // Change context:
+            unset($this->context["sheet"]);
+            $this->context["page"] = "error.txt";
+            
+            // Load page:
+            $this->common["loaded_page"] = $this->loadPage($this->context["page"]);
+        }
     }
+    
+    private function loadPage($filename) {
+        $file = "contents/pages/" . $filename;
+        return file_get_contents($file);
+    }
+    
+    private function parseSheet($filename) {
+        
+        $file = "contents/sheets/" . $filename;
+        
+        // Parse sheet:
+        $parser = new Parser();
+        $parser->readFile($file);
+        $parsed_sheet = $parser->parseSheet();
+
+        // DEBUG:
+//        ob_start();
+//        echo "<pre>";
+//        print_r($parsed_sheet);
+//        echo "</pre>";
+//        $output = ob_get_contents();
+//        ob_end_clean();
+//        echo $output;
+
+        return $parsed_sheet;
+        
+    }
+    
 }
 
-// Check if selected file exists:
-if (!file_exists($file)) {
-    $file = "pages/error.txt";
-}
+class ViewSheet extends View {
+    
+    public function render($shared_data) {
+        
+        if (isset($shared_data["parsed_sheet"])) {
+            return $this->renderSheet($shared_data["parsed_sheet"]);
+        }
+        
+        if (isset($shared_data["loaded_page"])) {
+            return $this->renderPage($shared_data["loaded_page"]);
+        }
+        
+        return "Something went terribly wrong in ViewSheet of WidgetDisplaySheet :'-(";
+        
+    }
+    
+    private function renderPage($page) {        
+        return $page;
+    }
+    
+    private function renderSheet($sheet) {
 
-// Activate interpreter only for sheets:
-if ($file_type == "sheet") {
-
-    $parser = new Parser();
-
-    $parser->readFile($file);
-    $sheet = $parser->parseSheet();
-
-}
-
+        ob_start();
+        // The upcoming output block is a mess. I just copied and pasted it from
+        // the first draft. Hence the output buffer to save time for the rewrite.
+        // Which still has to be done...
+        // TODO: Rewrite upcoming block!
 ?>
 
-<?php if ($file_type == "sheet"): ?>
-
-<div id="sheet">
-    <div id="sheet-header">
-
-        <?php /* DEBUG
-        <pre><?php print_r($sheet); ?></pre>
-        <hr />
-        <pre><?php //echo $file; ?></pre>
-        <pre><?php //print_r($sheet["meta"]); ?></pre>
-        */ ?>
+<div class="sheet">
+    <div class="sheet-header">
 
         <?php
             /**
@@ -97,12 +137,13 @@ if ($file_type == "sheet") {
         <?php endif; ?>
 
     </div>
-    <div id="sheet-body">
+    <div class="sheet-body">
 
         <?php
             /**
              *  PRINT BLOCKS
              */
+            
             foreach ($sheet["order"] as $id):
         ?>
 
@@ -127,10 +168,10 @@ if ($file_type == "sheet") {
         <div class="<?php echo $css_class; ?>">
 
             <?php
-                foreach ($block["lines"] as $line):
                 /**
                  *  PRINT LINES IN BLOCK
                  */
+                foreach ($block["lines"] as $line):
             ?>
             <p><?php echo $line; ?></p>
             <?php endforeach; ?>
@@ -143,12 +184,43 @@ if ($file_type == "sheet") {
 
 </div>
 
-<?php endif; ?>
+<?php
+        $result = ob_get_contents();
+        ob_end_clean();
+        
+        return $result;
+    }
+    
+}
 
-<?php if ($file_type == "page"): ?>
+class ViewSheetMeta extends View {
+    
+    public function render($shared_data) {
+        
+        $sheet = $shared_data["parsed_sheet"];
+        
+        ob_start();
+        
+?>
 
-    <div id="page">
-        <?php include ($file); ?>
-    </div>
+<div class="meta">
+    <h1>Meta</h1>
+    <table>
+    <?php
+        echo (isset($sheet["meta"]["year"]) ? "<tr><td>Year:</td><td>" . $sheet["meta"]["year"] . "</td></tr>" : "");
+        echo (isset($sheet["meta"]["album"]) ? "<tr><td>Album:</td><td>" . $sheet["meta"]["album"] . "</td></tr>" : "");
+        echo (isset($sheet["meta"]["source"]) ? "<tr><td>Source:</td><td>" . $sheet["meta"]["source"] . "</td></tr>" : "");
+        echo (isset($sheet["meta"]["listen"]) ? "<tr><td>Listen:</td><td><a href=\"" . $sheet["meta"]["listen"] . "\">" . $sheet["meta"]["listen"] . "</a></td></tr>" : "");
+        // TODO: Parser should add the surrounding tags. Maybe I need something like "engines" for different ourposes like a "meta engine", "chords engine", ...
+    ?>
+    </table>
+</div>
 
-<?php endif; ?>
+<?php
+        $result = ob_get_contents();
+        ob_end_clean();
+        
+        return $result;
+    }
+    
+}
