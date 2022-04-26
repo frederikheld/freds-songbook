@@ -24,10 +24,18 @@ class Parser {
     /* regexes */
     
     protected $REGEXES = array (
-        "chord"         => "~\[(.+?)\]~",               // [chord]
-        "meta"          => "~{{(.+?):(.+?)}}~",         // {{key:value}}
-        "blockstart"    => "~{{(.+?)(\|(.+?))*?:}}~",   // {{blockname:}} or {{blockname|modifyer:}}
-        "blockmarker"   => "~{{(.+?)}}~"                // {{blockmarker}}
+        "meta"           => "~{{(.+?):(.+?)}}~",         // {{key:value}}
+        "blockstart"     => "~{{(.+?)(\|(.+?))*?:}}~",   // {{blockname:}} or {{blockname|modifyer:}}
+        "blockmarker"    => "~{{(.+?)}}~",               // {{blockmarker}},
+        "chords"         => array (
+            array ("/^\[(\S+?)\]\s(.*)/", "<span class=\"chord detached start\">$1</span> $2"),     // detached at start of line
+            array ("/(.*)\s\[(\S+?)\]$/", "$1 <span class=\"chord detached end\">$2</span>"),       // detaced at end of line
+            array ("/\s\[(\S+?)\]\s/", " <span class=\"chord detached\">$1</span> "),               // detached within the line A
+            array ("/\s\[(\S+?)\]\s/", " <span class=\"chord detached\">$1</span> "),               // detached within the line B
+            array ("/\[(\S+?)\]/", "<span class=\"chord\">$1</span>")                               // embedded chord
+        )
+
+        // Note: "detached within line A" and "B" are necessary to replace repeated occurences of detached chords, in instrumental parts.
     );
     
     
@@ -166,7 +174,6 @@ class Parser {
                 continue;
             }
 
-
             $n++;
 
         }
@@ -178,10 +185,37 @@ class Parser {
          */
 
         $count = 0;
-        $helper = function($line) {
+        $helper = function ($line) {
             global $count;
 
-            return preg_replace($this->REGEXES["chord"], "<span class=\"chord\">$1</span>", $line, -1, $count);
+            // $temp = $line;
+            // $temp = preg_replace($this->REGEXES["chord_left"], " <span class=\"chord\">$1</span>", $temp, -1, $count);
+            // $temp = preg_replace($this->REGEXES["chord_right"], "<span class=\"chord\">$1</span> ", $temp, -1, $count);
+            // $temp = preg_replace($this->REGEXES["chord_start"], "<span class=\"chord detached start\">$1</span> ", $temp, -1, $count);
+            // $temp = preg_replace($this->REGEXES["chord_detached"], "<span class=\"chord detached\">$1</span>", $temp, -1, $count);
+            // $temp = preg_replace($this->REGEXES["chord_end"], " <span class=\"chord detached end\">$1</span>", $temp, -1, $count);
+            // $temp = preg_replace($this->REGEXES["chord"], "<span class=\"chord\">$1</span>", $temp, -1, $count);
+            // return $temp;
+
+            $result = "";
+
+            try {
+                $patterns = array_map(function ($array) { return $array[0]; }, $this->REGEXES["chords"]);
+                $replacements = array_map(function ($array) { return $array[1]; }, $this->REGEXES["chords"]);
+
+                // echo "<pre>" . htmlentities(print_r($patterns, true)) . "</pre>";
+                // echo "<pre>" . htmlentities(print_r($replacements, true)) . "</pre>";
+                
+                $result = preg_replace($patterns, $replacements, $line, -1, $count);
+
+                // echo print_r($result);
+
+            } catch (Exception $exception) {
+                echo $exception->getMessage();
+                $result = $line;
+            }
+
+            return $result;
         };
         
         // DEBUG:

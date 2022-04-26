@@ -94,3 +94,25 @@
     overflow: visible;
     font-size: 1em;
 }
+
+.sheet .chord.detached {
+    width: auto;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    /* color: blue; */
+}
+
+.sheet .chord.start {
+    margin-left: 0;
+    /* color: green; */
+}
+
+.sheet .chord.end {
+    margin-right: 0;
+    /* color: red; */
+}
+
+.sheet .chord.wrap {
+    /* margin-right: 0; */
+    color: red;
+}
