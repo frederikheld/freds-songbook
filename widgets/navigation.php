@@ -81,8 +81,8 @@ class WidgetNavigation extends Widget {
         // Extract and return result:
         $result = array (
             "filename"  => $filename,
-            "artist"    => $sheet["meta"]["artist"],
-            "title"     => $sheet["meta"]["title"]
+            "artist"    => (isset($sheet["meta"]["artist"]) ? $sheet["meta"]["artist"] : ""),
+            "title"     => (isset($sheet["meta"]["title"]) ? $sheet["meta"]["title"] : "")
         );
         return $result;
         
@@ -98,7 +98,7 @@ class ViewSheetsNav extends View {
         
         $result = "<ul data-role=\"listview\" data-filter=\"true\" data-filter-placeholder=\"Search sheets...\">\n";
         foreach ($data["sheets"]["meta"] as $meta) {
-            $result .= "\t<li><a href=\"" . $_SERVER["SCRIPT_NAME"] . "?sheet=" . $meta["filename"] . "\">" . $meta["artist"] . " - " . $meta["title"] . "</a></li>\n";
+            $result .= "\t<li><a href=\"" . $_SERVER["SCRIPT_NAME"] . "?sheet=" . $meta["filename"] . "\"><span class=\"navigation-song-title\">" . $meta["title"] . "</span>" . (strlen($meta["artist"]) > 0 ? "<span class=\"navigation-song-artist\"> by " . $meta["artist"] ."</span>" : "") . "</a></li>\n";
         }
         $result .= "</ul>\n";
         
