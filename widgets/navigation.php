@@ -81,8 +81,8 @@ class WidgetNavigation extends Widget {
         // Extract and return result:
         $result = array (
             "filename"  => $filename,
-            "artist"    => $sheet["meta"]["artist"],
-            "title"     => $sheet["meta"]["title"]
+            "artist"    => (isset($sheet["meta"]["artist"]) ? $sheet["meta"]["artist"] : ""),
+            "title"     => (isset($sheet["meta"]["title"]) ? $sheet["meta"]["title"] : "")
         );
         return $result;
         
