@@ -28,14 +28,17 @@ class Parser {
         "blockstart"     => "~{{(.+?)(\|(.+?))*?:}}~",   // {{blockname:}} or {{blockname|modifyer:}}
         "blockmarker"    => "~{{(.+?)}}~",               // {{blockmarker}},
         "chords"         => array (
+            array ("/\]\[/", "] ["),                                                                // add blank between detached chords [1]
             array ("/^\[(\S+?)\]\s(.*)/", "<span class=\"chord detached start\">$1</span> $2"),     // detached at start of line
             array ("/(.*)\s\[(\S+?)\]$/", "$1 <span class=\"chord detached end\">$2</span>"),       // detaced at end of line
-            array ("/\s\[(\S+?)\]\s/", " <span class=\"chord detached\">$1</span> "),               // detached within the line A
-            array ("/\s\[(\S+?)\]\s/", " <span class=\"chord detached\">$1</span> "),               // detached within the line B
+            array ("/\s\[(\S+?)\]\s/", " <span class=\"chord detached\">$1</span> "),               // detached within the line A [2]
+            array ("/\s\[(\S+?)\]\s/", " <span class=\"chord detached\">$1</span> "),               // detached within the line B [2]
             array ("/\[(\S+?)\]/", "<span class=\"chord\">$1</span>")                               // embedded chord
         )
 
-        // Note: "detached within line A" and "B" are necessary to replace repeated occurences of detached chords, in instrumental parts.
+        // Notes:
+        // [1]: Fix missing blanks between detached chords that would break rendering in the following steps.
+        // [2]: "detached within line A" and "B" are necessary to replace repeated occurences of detached chords, in instrumental parts.
     );
     
     
