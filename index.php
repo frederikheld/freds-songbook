@@ -1,6 +1,7 @@
 <?php
 
-    error_reporting(E_ALL);
+    // error_reporting(E_ALL); // for development use
+    error_reporting(0); // for productive use
     
     // TODO: Disarm all user input at once
     
